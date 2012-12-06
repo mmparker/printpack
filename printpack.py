@@ -1,6 +1,6 @@
 import os
 import subprocess
-
+import glob
 
 # Check for the existence of a "printed" folder
 # If it doesn't exist, make it
@@ -14,18 +14,25 @@ pdfpath = 'test.pdf'
 # Ask the user for the number of forms to be printed - until I can figure
 # out a way to get number of pages from Python, this will have to do
 # Placeholder for asking
-nforms = 5;
+nforms = 5
 
 
-# Using gsprint, print each of the forms in correct order
+# Using pdftk, reorder the forms to put Section A first, then cover sheet, then Sections B-E, then LTBI testing form
 for i in range(nforms):
+    subprocess.call(['pdftk', pdfpath, 'cat', '{0}-{1}'.format(3 + 16 * i, 6 + 16 *i),  '{0}-{1}'.format(1 + 16 * i, 2 + 16 *i), '{0}-{1}'.format(7 + 16 * i, 16 + 16 *i), 'output', 'reordered{0}.pdf'.format(i + 1)])
 
-    subprocess.call(['gsprint', '-dFirstPage={0}'.format(1 + 16 * i), '-dLastPage={0}'.format(2 + 16 * i), pdfpath])
+# Using gsprint, print each of the forms in the correct order and groupings
+# Get the list of files
+formlist = glob.glob('reordered*.pdf')
+
+# Print each
+for form in formlist:
     
-    subprocess.call(['gsprint', '-dFirstPage={0}'.format(3 + 16 * i), '-dLastPage={0}'.format(6 + 16 * i), pdfpath])
+    subprocess.call(['gsprint', '-dFirstPage=1', '-dLastPage=4', form])
     
-    subprocess.call(['gsprint', '-dFirstPage={0}'.format(7 + 16 * i), '-dLastPage={0}'.format(14 + 16 * i), pdfpath])
+    subprocess.call(['gsprint', '-dFirstPage=5', '-dLastPage=14', form])
     
-    subprocess.call(['gsprint', '-dFirstPage={0}'.format(15 + 16 * i), '-dLastPage={0}'.format(16 + 16 * i), pdfpath])
+    subprocess.call(['gsprint', '-dFirstPage=15', '-dLastPage=16', form])
+
 
 
