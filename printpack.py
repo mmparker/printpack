@@ -1,6 +1,10 @@
 import os
-import subprocess
-import glob
+from subprocess import call
+from glob import glob
+from Tkinter import Tk
+from tkFileDialog import askopenfilename
+from tkSimpleDialog import askinteger
+
 
 # Check for the existence of a "printed" folder
 # If it doesn't exist, make it
