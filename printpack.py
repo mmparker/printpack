@@ -53,3 +53,7 @@ for form in formlist:
 
 
 # Move the original file into the printed folder
+os.rename(pdfpath, 
+        os.path.join(os.getcwd(), 
+                     'printed', 
+                     os.path.split(pdfpath)[1])
