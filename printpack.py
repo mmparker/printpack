@@ -9,12 +9,12 @@ if not os.path.exists(os.path.join(os.getcwd(), "printed")):
 
 
 # Ask the user to identify the PDF file they want to print
-pdfpath = 'test.pdf'
+Tk().withdraw()
+pdfpath = askopenfilename(**{'title': 'Which file contains the forms?'})
 
 # Ask the user for the number of forms to be printed - until I can figure
 # out a way to get number of pages from Python, this will have to do
-# Placeholder for asking
-nforms = 5
+nforms = tkSimpleDialog.askinteger('', 'How many forms are included in this file?', **{'minvalue': 1})
 
 
 # Using pdftk, reorder the forms to put Section A first, then cover sheet, then Sections B-E, then LTBI testing form
