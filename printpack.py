@@ -62,7 +62,7 @@ def print_forms():
     #####################################################
     if formtype == 'Adult':
         print_adult(pdfpath, nforms, scratchdir)
-    elif form-type == 'Pediatric':
+    elif formtype == 'Pediatric':
         print_ped(pdfpath, nforms, scratchdir)
     else:
         raise ValueError("Invalid form type - must be 'Adult' or 'Pediatric'")
