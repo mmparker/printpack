@@ -1,6 +1,4 @@
 import os
-from subprocess import call
-from glob import glob
 from Tkinter import Tk
 from tkFileDialog import askopenfilename
 from tkSimpleDialog import askinteger
