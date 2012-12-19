@@ -15,7 +15,7 @@ from glob import glob
 from tempfile import mkdtemp
 from shutil import rmtree
 
-def print_forms(pdfpath, formtype, nforms):
+def print_forms():
     """Print TBESC forms in sequence, including pre-enroll and consent.
     
     Using pdftk, reorder the forms to put Section A first, 
