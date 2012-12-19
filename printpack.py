@@ -49,7 +49,8 @@ def print_forms():
     pdfpath = askopenfilename(**{'title': 'Which file contains the forms?'})
     
     # Ask the user whether these are adult or pediatric forms
-    formtype = "Pediatric"
+    formtypes = ['Adult', 'Pediatric']
+    formtype = 'Pediatric'
     
     # Ask the user for the number of forms to be printed - until I can figure
     # out a way to get number of pages from Python, this will have to do
@@ -94,6 +95,8 @@ def print_adult(pdfpath, nforms, scratchdir):
     
     # Then print each
     for form in formlist:
+        call(['gsprint', 'Pre-Enrollment.pdf'])
+        call(['gsprint', 'Informed Consent for Adults_English_Denver.pdf'])
         call(['gsprint', '-dFirstPage=1', '-dLastPage=4', form])
         call(['gsprint', '-dFirstPage=5', '-dLastPage=14', form])
         call(['gsprint', '-dFirstPage=15', '-dLastPage=16', form])
@@ -117,6 +120,8 @@ def print_ped(pdfpath, nforms, scratchdir):
     
     # Then print each
     for form in formlist:
+        call(['gsprint', 'Pre-Enrollment.pdf'])
+        call(['gsprint', 'Parental Permission_English_Denver.pdf'])
         call(['gsprint', '-dFirstPage=1', '-dLastPage=4', form])
         call(['gsprint', '-dFirstPage=5', '-dLastPage=13', form])
         call(['gsprint', '-dFirstPage=14', '-dLastPage=15', form])
