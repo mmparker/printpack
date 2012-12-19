@@ -29,6 +29,12 @@ def print_forms(pdfpath, formtype, nforms):
     scratchdir = mkdtemp()
 
     # Call the appropriate subroutine, adult or pediatric
+    if formtype == 'Adult':
+        print_adult(pdfpath, nforms, scratchdir)
+    elif form-type == 'Pediatric':
+        print_ped(pdfpath, nforms, scratchdir)
+    else:
+        raise ValueError("Invalid form type - must be 'Adult' or 'Pediatric'")
     
     # Delete the temporary directory
     rmtree(scratchdir)
