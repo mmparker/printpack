@@ -14,6 +14,7 @@ from subprocess import call
 from glob import glob
 from tempfile import mkdtemp
 from shutil import rmtree
+import sys
 
 def print_forms():
     """Print TBESC forms in sequence, including pre-enroll and consent.
@@ -49,8 +50,26 @@ def print_forms():
     pdfpath = askopenfilename(**{'title': 'Which file contains the forms?'})
     
     # Ask the user whether these are adult or pediatric forms
-    formtypes = ['Adult', 'Pediatric']
-    formtype = 'Pediatric'
+    # Compare inputs to these possibilities
+    formtypes = {'Adult': 'Adult', 'adult': 'Adult', 'A': 'Adult', 'a': 'Adult',
+                 'Pediatric': 'Pediatric', 'pediatric': 'Pediatric',
+                 'ped': 'Pediatric', 'Ped': 'Pediatric',
+                 'P': 'Pediatric', 'p': 'Pediatric'}
+
+    formtype_input = raw_input('Are these adult or pediatric forms?  ')
+    
+    try:
+        formtype = formtypes[formtype_input]
+    except KeyError:
+        formtype_input = raw_input("Please type either 'Adult' or 'Pediatric':  ")
+
+    try: 
+        formtype = formtypes[formtype_input]
+    except KeyError:
+        print("Something's still not right. Please try again.")
+        sys.exit()
+
+
     
     # Ask the user for the number of forms to be printed - until I can figure
     # out a way to get number of pages from Python, this will have to do
