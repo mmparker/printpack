@@ -6,6 +6,10 @@
 # print complete packets including the static pre-enrollment and the
 # English long-form consent or parental permission
 
+import os
+from Tkinter import Tk
+from tkFileDialog import askopenfilename
+from tkSimpleDialog import askinteger
 from subprocess import call
 from glob import glob
 from tempfile import mkdtemp
@@ -25,10 +29,37 @@ def print_forms(pdfpath, formtype, nforms):
     nforms: how many forms are contained in the file
 
     """
+    #####################################################
+    # Directory setup
+    #####################################################
+    # Check for the existence of a "printed" folder
+    # If it doesn't exist, make it
+    printdir = os.path.join(os.getcwd(), 'printed');
+    if not os.path.exists(printdir):
+        os.mkdir(printdir)
+
     # Create a temporary directory for working with the (potentially many) PDFs
     scratchdir = mkdtemp()
 
+    #####################################################
+    # Get user inputs
+    #####################################################
+    # Ask the user to identify the PDF file they want to print
+    Tk().withdraw()
+    pdfpath = askopenfilename(**{'title': 'Which file contains the forms?'})
+    
+    # Ask the user whether these are adult or pediatric forms
+    formtype = "Pediatric"
+    
+    # Ask the user for the number of forms to be printed - until I can figure
+    # out a way to get number of pages from Python, this will have to do
+    nforms = askinteger('', 
+                        'How many forms are included in this file?', 
+                        **{'minvalue': 1})
+    
+    #####################################################
     # Call the appropriate subroutine, adult or pediatric
+    #####################################################
     if formtype == 'Adult':
         print_adult(pdfpath, nforms, scratchdir)
     elif form-type == 'Pediatric':
@@ -36,9 +67,14 @@ def print_forms(pdfpath, formtype, nforms):
     else:
         raise ValueError("Invalid form type - must be 'Adult' or 'Pediatric'")
     
+    #####################################################
+    # Clean up
+    #####################################################
     # Delete the temporary directory
     rmtree(scratchdir)
 
+    # Move the original file into the printed folder
+    os.rename(pdfpath, os.path.join(printdir, os.path.split(pdfpath)[1]))
 
 
 def print_adult(pdfpath, nforms, scratchdir):
