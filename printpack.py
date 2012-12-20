@@ -80,6 +80,12 @@ def print_forms():
     except ValueError:
         nforms_input = raw_input(nforms_input + " isn't an integer. Please try again:  ")
 
+    try:
+        nforms = int(nforms_input)
+    except ValueError:
+        print("Something's still not right. Please try again.")
+        sys.exit()
+
 
 
     #####################################################
