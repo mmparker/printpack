@@ -73,10 +73,15 @@ def print_forms():
     
     # Ask the user for the number of forms to be printed - until I can figure
     # out a way to get number of pages from Python, this will have to do
-    nforms = askinteger('', 
-                        'How many forms are included in this file?', 
-                        **{'minvalue': 1})
-    
+    nforms_input = raw_input('How many forms are in the combined PDF?  ')
+
+    try:
+        nforms = int(nforms_input)
+    except ValueError:
+        nforms_input = raw_input(nforms_input + " isn't an integer. Please try again:  ")
+
+
+
     #####################################################
     # Call the appropriate subroutine, adult or pediatric
     #####################################################
