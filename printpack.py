@@ -7,12 +7,14 @@
 # English long-form consent or parental permission
 
 import os
+from tempfile import mkdtemp
 from Tkinter import Tk
 from tkFileDialog import askopenfilename
 from tkSimpleDialog import askinteger
+from ConfigParser import ConfigParser
+from ConfigParser import NoOptionError
 from subprocess import call
 from glob import glob
-from tempfile import mkdtemp
 from shutil import rmtree
 import sys
 
@@ -23,12 +25,6 @@ def print_forms():
     then the cover sheet, then Sections B-E, then LTBI testing form
     Then, using gsprint, print the forms in the correct order and in groupings
     that take advantage of automatic stapling.
-
-    Args:
-    pdfpath: the path to the PDF containing the combined forms
-    formtype: whether the forms are 'Adult' or 'Pediatric'
-    nforms: how many forms are contained in the file
-
     """
     #####################################################
     # Directory setup
@@ -45,8 +41,43 @@ def print_forms():
     #####################################################
     # Get user inputs
     #####################################################
+    # Create a config object and read in any existing config
+    config = ConfigParser()
+    config.read('local.cfg')
+    if config.sections() == []:
+        config.add_section('formpaths')
+
+    # Check for each of the paths. If any are missing, prompt the user to 
+    # provide it
+    # Ask the user to identify the location of the pre-enrollment form
+    try:
+        config.get('formpaths', 'preenroll')
+    except NoOptionError: 
+        Tk().withdraw()
+        config.set('formpaths', 
+                   'preenroll', 
+                   askopenfilename(**{'title': 'Which file contains your blank pre-enrollment form?'}))
+
+    # Ask the user to identify the location of their adult consent form
+    try:
+        config.get('formpaths', 'adult_consent')
+    except NoOptionError: 
+        Tk().withdraw()
+        config.set('formpaths', 
+                   'adult_consent', 
+                   askopenfilename(**{'title': 'Which file contains your English adult consent form?'}))
+
+    # Ask the user to identify the location of their parental permission form
+    try:
+        config.get('formpaths', 'parental_perm')
+    except NoOptionError: 
+        Tk().withdraw()
+        config.set('formpaths', 
+                   'parental_perm', 
+                   askopenfilename(**{'title': 'Which file contains your English parental permission form?'}))
+
+
     # Ask the user to identify the PDF file they want to print
-    Tk().withdraw()
     pdfpath = askopenfilename(**{'title': 'Which file contains the forms?'})
     
     # Ask the user whether these are adult or pediatric forms
@@ -69,8 +100,6 @@ def print_forms():
         print("Something's still not right. Please try again.")
         sys.exit()
 
-
-    
     # Ask the user for the number of forms to be printed - until I can figure
     # out a way to get number of pages from Python, this will have to do
     nforms_input = raw_input('How many forms are in the combined PDF?  ')
@@ -87,14 +116,20 @@ def print_forms():
         sys.exit()
 
 
+    #####################################################
+    # Save the form paths to the config file
+    #####################################################
+    with open('local.cfg', 'wb') as configfile:
+        config.write(configfile)
+
 
     #####################################################
     # Call the appropriate subroutine, adult or pediatric
     #####################################################
     if formtype == 'Adult':
-        print_adult(pdfpath, nforms, scratchdir)
+        print_adult(pdfpath, nforms, scratchdir, config)
     elif formtype == 'Pediatric':
-        print_ped(pdfpath, nforms, scratchdir)
+        print_ped(pdfpath, nforms, scratchdir, config)
     else:
         raise ValueError("Invalid form type - must be 'Adult' or 'Pediatric'")
     
@@ -108,7 +143,7 @@ def print_forms():
     os.rename(pdfpath, os.path.join(printdir, os.path.split(pdfpath)[1]))
 
 
-def print_adult(pdfpath, nforms, scratchdir):
+def print_adult(pdfpath, nforms, scratchdir, config):
     """Print adult TBESC forms - use printforms()."""
     # Loop over the forms, exploding and recombining them
     for i in range(nforms):
@@ -125,15 +160,15 @@ def print_adult(pdfpath, nforms, scratchdir):
     
     # Then print each
     for form in formlist:
-        call(['gsprint', 'Pre-Enrollment.pdf'])
-        call(['gsprint', 'Informed Consent for Adults_English_Denver.pdf'])
+        call(['gsprint', config.get('formpaths', 'preenroll')])
+        call(['gsprint', config.get('formpaths', 'adult_consent')])
         call(['gsprint', '-dFirstPage=1', '-dLastPage=4', form])
         call(['gsprint', '-dFirstPage=5', '-dLastPage=14', form])
         call(['gsprint', '-dFirstPage=15', '-dLastPage=16', form])
 
 
 
-def print_ped(pdfpath, nforms, scratchdir):
+def print_ped(pdfpath, nforms, scratchdir, config):
     """Print pediatric TBESC forms - use printforms()."""
     # Loop over the forms, exploding and recombining them
     for i in range(nforms):
@@ -150,8 +185,8 @@ def print_ped(pdfpath, nforms, scratchdir):
     
     # Then print each
     for form in formlist:
-        call(['gsprint', 'Pre-Enrollment.pdf'])
-        call(['gsprint', 'Parental Permission_English_Denver.pdf'])
+        call(['gsprint', config.get('formpaths', 'preenroll')])
+        call(['gsprint', config.get('formpaths', 'parental_perm')])
         call(['gsprint', '-dFirstPage=1', '-dLastPage=4', form])
         call(['gsprint', '-dFirstPage=5', '-dLastPage=13', form])
         call(['gsprint', '-dFirstPage=14', '-dLastPage=15', form])
