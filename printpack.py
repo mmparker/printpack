@@ -150,3 +150,7 @@ def print_ped(pdfpath, nforms, scratchdir):
         call(['gsprint', '-dFirstPage=5', '-dLastPage=13', form])
         call(['gsprint', '-dFirstPage=14', '-dLastPage=15', form])
 
+
+
+if __name__ == "__main__":
+    print_forms()
