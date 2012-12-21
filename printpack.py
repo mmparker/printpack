@@ -1,4 +1,13 @@
-"""Print out nearly-complete TBESC participant packets - in order and correctly stapled."""
+"""Print out nearly-complete TBESC participant packets - in order and correctly stapled.
+
+To use from the command line, just type 'python printpack.py'. Inside the
+Python interpreter, use 'print_forms()' to get started.
+
+Requires that pdftk, gsprint, and Ghostscript be installed, and that pdftk and
+gsprint be on the system path (i.e., you can type in 'pdftk' and 'gsprint' at
+the command line to run those programs).
+
+"""
 
 import os
 from tempfile import mkdtemp
@@ -137,7 +146,7 @@ def print_forms():
 
 
 def print_adult(pdfpath, nforms, scratchdir, config):
-    """Print adult TBESC forms - use printforms()."""
+    """Print adult TBESC forms - use print_forms() instead."""
     # Loop over the forms, exploding and recombining them
     for i in range(nforms):
         call(['pdftk', pdfpath, 'cat', 
@@ -162,7 +171,7 @@ def print_adult(pdfpath, nforms, scratchdir, config):
 
 
 def print_ped(pdfpath, nforms, scratchdir, config):
-    """Print pediatric TBESC forms - use printforms()."""
+    """Print pediatric TBESC forms - use print_forms() instead."""
     # Loop over the forms, exploding and recombining them
     for i in range(nforms):
         call(['pdftk', pdfpath, 'cat', 
