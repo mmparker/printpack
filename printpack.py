@@ -10,7 +10,6 @@ import os
 from tempfile import mkdtemp
 from Tkinter import Tk
 from tkFileDialog import askopenfilename
-from tkSimpleDialog import askinteger
 from ConfigParser import ConfigParser
 from ConfigParser import NoOptionError
 from subprocess import call
@@ -31,7 +30,7 @@ def print_forms():
     #####################################################
     # Check for the existence of a "printed" folder
     # If it doesn't exist, make it
-    printdir = os.path.join(os.getcwd(), 'printed');
+    printdir = os.path.join(os.getcwd(), 'printed')
     if not os.path.exists(printdir):
         os.mkdir(printdir)
 
