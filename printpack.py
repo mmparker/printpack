@@ -80,6 +80,7 @@ def print_forms():
 
 
     # Ask the user to identify the PDF file they want to print
+    Tk().withdraw()
     pdfpath = askopenfilename(**{'title': 'Which file contains the forms?'})
     
     # Ask the user whether these are adult or pediatric forms
