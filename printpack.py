@@ -1,10 +1,4 @@
-
-# Define the form-printing functions
-# Using the path of the PDF of files (pdfpath),
-# the type of form ('Adult' or 'Pediatric' - formtype),
-# and the number of forms in the file (nforms),
-# print complete packets including the static pre-enrollment and the
-# English long-form consent or parental permission
+"""Print out nearly-complete TBESC participant packets - in order and correctly stapled."""
 
 import os
 from tempfile import mkdtemp
